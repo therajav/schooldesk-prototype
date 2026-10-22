@@ -11,11 +11,13 @@ import { BarChart, Bar, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { classRows, seedStudents } from './data/seed-data'
 import { initialState, loadState, resetState, saveState, updateFeePayment, type DemoState } from './services/school-data'
 import type { AttendanceStatus, FeeStatus, Student } from './types'
+import TeacherWorkspace from './TeacherWorkspace'
 
 const navItems = [
   { to: '/', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/students', label: 'Students', icon: Users },
   { to: '/attendance', label: 'Attendance', icon: CalendarCheck },
+  { to: '/teacher', label: 'Teacher workspace', icon: BookOpenCheck },
   { to: '/fees', label: 'Fees', icon: Wallet },
   { to: '/reports', label: 'Reports', icon: ChartNoAxesCombined },
   { to: '/staff', label: 'Staff', icon: ContactRound },
@@ -108,6 +110,7 @@ function App() {
             <Route path="/" element={<Dashboard data={data} activeStudents={activeStudents} paidTotal={paidTotal} dueTotal={dueTotal} onNavigate={navigate} notify={notify}/>} />
             <Route path="/students" element={<Students data={data} update={update} notify={notify}/>} />
             <Route path="/attendance" element={<Attendance data={data} update={update} notify={notify}/>} />
+            <Route path="/teacher" element={<TeacherWorkspace data={data} onNavigate={navigate} notify={notify}/>} />
             <Route path="/fees" element={<Fees data={data} update={update} notify={notify}/>} />
             <Route path="/reports" element={<Reports data={data} notify={notify}/>} />
             <Route path="/staff" element={<StaffPage data={data} update={update} notify={notify}/>} />
