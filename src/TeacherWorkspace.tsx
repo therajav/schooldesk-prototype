@@ -1,0 +1,29 @@
+import { useMemo, useState } from 'react'
+import { ArrowUpRight, Bell, BookOpenCheck, CalendarCheck, CalendarDays, CheckCircle2, Clock3, FileText, School, Users } from 'lucide-react'
+import { classRows } from './data/seed-data'
+import type { DemoState } from './services/school-data'
+type Props = { data: DemoState; onNavigate: (path: string) => void; notify: (message: string) => void }
+const today = () => new Date().toISOString().slice(0, 10)
+export default function TeacherWorkspace({ data, onNavigate, notify }: Props) {
+ const [className,setClassName]=useState(classRows[0]?.name ?? 'Grade 1')
+ const [section,setSection]=useState('A')
+ const [date,setDate]=useState(today())
+ const students=useMemo(()=>data.students.filter(s=>s.className===className&&s.section===section&&s.status==='Active'),[data.students,className,section])
+ const attendance=data.attendance.filter(a=>a.date===date&&students.some(s=>s.id===a.studentId))
+ const present=attendance.filter(a=>a.status==='Present').length, absent=attendance.filter(a=>a.status==='Absent').length
+ const timetable=[['08:45–09:30','Morning assembly','School ground','Assembly'],['09:30–10:15','English','Room 1A','Lesson'],['10:15–11:00','Mathematics','Room 1A','Lesson'],['11:20–12:05','Environmental Studies','Room 1A','Lesson'],['13:00–13:45','Reading period','Library','Activity']]
+ return <div className="page-stack">
+ <div className="page-heading"><div><div className="eyebrow">TEACHER WORKSPACE</div><h1>Good morning, teacher</h1><p>Start with attendance, then check your timetable and classroom tasks.</p></div><div className="heading-action"><button className="button button-primary" onClick={()=>onNavigate('/attendance')}><CalendarCheck size={16}/> Take attendance</button></div></div>
+ <div className="teacher-welcome"><div className="teacher-welcome-icon"><BookOpenCheck size={22}/></div><div><strong>Your classroom, at a glance</strong><p>Try this sample teacher workflow. Timetable and class details are fictional.</p></div><span className="demo-pill"><span/> Demo mode</span></div>
+ <div className="teacher-layout">
+ <section className="section-card"><div className="section-heading"><div><h2>Attendance snapshot</h2><p>Choose your class and date</p></div></div>
+ <div className="filter-row teacher-filters"><label className="select-box"><School size={15}/><select aria-label="Class" value={className} onChange={e=>setClassName(e.target.value)}>{classRows.map(c=><option key={c.name}>{c.name}</option>)}</select></label><label className="select-box"><Users size={15}/><select aria-label="Section" value={section} onChange={e=>setSection(e.target.value)}><option>A</option><option>B</option><option>C</option></select></label><label className="date-input"><CalendarDays size={15}/><input aria-label="Attendance date" type="date" value={date} onChange={e=>setDate(e.target.value)}/></label></div>
+ <div className="teacher-attendance-stats"><div><span>Class list</span><strong>{students.length}</strong></div><div><span>Marked present</span><strong className="green-text">{present}</strong></div><div><span>Marked absent</span><strong className="balance-text">{absent}</strong></div></div><p className="teacher-attendance-note">{attendance.length?`${attendance.length} of ${students.length} students have an attendance record for this date.`:'No attendance has been recorded for this class and date in the demo yet.'}</p><button className="button button-primary" onClick={()=>onNavigate('/attendance')}><CalendarCheck size={15}/> Open class register</button></section>
+ <section className="section-card"><div className="section-heading"><div><h2>Quick classroom actions</h2><p>Shortcuts for a teacher's day</p></div></div><div className="teacher-action-list">
+ <button onClick={()=>onNavigate('/attendance')}><span className="quick-icon quick-teal"><CalendarCheck size={17}/></span><span><strong>Mark attendance</strong><small>Present, absent, or leave</small></span><ArrowUpRight size={15}/></button>
+ <button onClick={()=>notify('Homework tracking is planned; it does not save records yet.')}><span className="quick-icon quick-purple"><BookOpenCheck size={17}/></span><span><strong>Homework</strong><small>Planned for a future iteration</small></span><ArrowUpRight size={15}/></button>
+ <button onClick={()=>notify('Marks and assessments are planned for a future iteration.')}><span className="quick-icon quick-blue"><FileText size={17}/></span><span><strong>Marks & assessments</strong><small>Planned for a future iteration</small></span><ArrowUpRight size={15}/></button>
+ <button onClick={()=>notify('Class announcements are planned for a future iteration.')}><span className="quick-icon quick-orange"><Bell size={17}/></span><span><strong>Announcements</strong><small>Planned for a future iteration</small></span><ArrowUpRight size={15}/></button></div></section></div>
+ <section className="section-card"><div className="section-heading"><div><h2>Today's timetable</h2><p>Illustrative timetable · not connected to a real staff schedule</p></div></div><div className="teacher-timetable">{timetable.map((item,i)=><div className="teacher-period" key={item[0]}><div className="teacher-period-time"><Clock3 size={13}/>{item[0]}</div><div className={`teacher-period-marker ${i===0?'marker-teal':i===4?'marker-purple':'marker-blue'}`}/><div className="teacher-period-copy"><strong>{item[1]}</strong><span>{item[2]}</span></div><span className="teacher-period-type">{item[3]}</span></div>)}</div></section>
+ <div className="info-callout"><CheckCircle2 size={17}/><p>Demo only: role-based security, homework, marks, and real timetables are not implemented. Do not enter real student data.</p></div></div>
+}
