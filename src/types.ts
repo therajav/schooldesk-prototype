@@ -9,6 +9,23 @@ export type Student = {
   guardian: string
   phone: string
   status: 'Active' | 'Inactive'
+  dateOfBirth?: string
+  gender?: string
+  bloodGroup?: string
+  religion?: string
+  casteCategory?: string
+  address?: string
+  parent2Name?: string
+  parent2Phone?: string
+  parentEmail?: string
+  relationship?: string
+  idProofType?: string
+  idProofLast4?: string
+  previousSchool?: string
+  previousClass?: string
+  previousBoard?: string
+  previousResult?: string
+  medicalNotes?: string
 }
 export type AttendanceRecord = {
   studentId: string
